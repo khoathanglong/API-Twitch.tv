@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>witch.tv API</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class='container'>
+	<button class="btn btn-danger" type="button" id='button-online'>online</button>
+	<button class="btn btn-danger" type="button" id='button-offline'>offline</button>
+	<p class="text-center">Made by Long Khoa</p>
+	<div class='row'>
+		<div class="online col-xs-6 col-md-8"><br></div>
+		<div class="offline col-xs-6 col-md-4"></div>
+	</div>
+	
+</div>
+</body>
+<style>
+	body{
+		background: url('http://wallpapercraze.com/images/wallpapers/twitch_waifu_w1.jpeg') no-repeat center center fixed; 
+    	background-size: cover;
+    	color:white;
+    }
+</style>
+<script>
+	var channel=["ESL_SC2", "OgamingSC2", "cretetion", "freecodecamp", "storbeck", "habathcx", "RobotCaleb", "noobs2ninjas","eclypsiatvlol"]
+	var offline='<h1 class="text-right">twitch.tv offline channels</h1>';
+	var online='<h1 class="text-right">twitch.tv streaming channels</h1>';
+	channel.forEach(function(value){
+		var link='https://wind-bow.gomix.me/twitch-api/streams/'
+		link+=value
+		$.get(link,function(e){
+		var condition=e.stream
+		if(condition==null){
+			offline+='<div class="text-right">'+'<p><a href="https://www.twitch.tv/'+value+'">'+value+' is now offline</a></p></div>'
+			$('.offline').html(offline)
+			$('a').css({'color':'white'})
+		}
+		else{
+			var game=condition.game
+			var name=condition.channel.name
+			var viewers="viewers: "+condition.viewers
+			var channelUrl=condition.channel.url;
+			var video_banner='<a target="blank" href='+channelUrl+'><img class="img-responsive" hre src="'+condition.channel.video_banner+'"></a>'
+			online+='<div class="text-center">'+video_banner+
+					'<h4>'+name+' is streaming: '+game+' (' +viewers+')</h4>'+'</div>'
+			$('.online').html(online)
+		}
+	},'jsonp')
+	})
+	$('#button-offline').click(function(){
+		$('.offline').toggle()
+	})
+	$('#button-online').click(function(){
+		$('.online').toggle(function(){
+			if($(this).attr('style')=='display: none;'){
+				$('.offline').removeClass("col-xs-6 col-md-4")
+								.addClass('col-xs-12')
+			}
+			else{
+				$('.offline').removeClass("col-xs-12")
+								.addClass('col-xs-6 col-md-4')
+			}
+		})
+
+	})
+</script>
+</html>
